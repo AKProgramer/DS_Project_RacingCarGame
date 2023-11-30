@@ -1,41 +1,71 @@
 #include<iostream>
 #include"GameWorld.h"
+#include"Header.h"
+#include <cstdlib>
+#include<conio.h>
 #include<ctime>
-#include<queue>
-#include<vector>
 using namespace std;
-
 int main()
 {
-	
-	
 	srand(time(0));
-	
+	queue obstacles;
+	queue powerup;
 	int grid=5 + (rand() % 15);
-	int noOfObstacles = grid;
+	// enqueuing obstacles
+	for (int i = 0; i < grid; i++)
+	{
+		obstacles.enqueue('#');
+	}
 	
-	cout << "Enter No Of Vertices" << endl;
+	bool check = false;
+	int randomVal1 = rand() % grid;
+	int randomVal2 = rand() % grid;
 	LinkedList* graph = new LinkedList[grid];
 	for (int i = 0; i < grid; i++)
 	{
 		int indexOfObstcle = rand() % grid;
+		int indexOfPowerup = rand() % grid;
 		for (int j = 0; j < grid; j++)
 		{
 
 			char ch = '*';
 			if (j == indexOfObstcle)
 			{
-				ch = '|';
+				ch = obstacles.Front();
+				obstacles.dequeue();
 			}
-			if (i == 0 && j == 0)
+			if (j == indexOfPowerup)
 			{
-				char ch = 'C';
-				graph[i].insert(ch);
+				ch = '\xE2';
 			}
-			else if (i == grid - 1 && j == grid - 1)
+			if (i == 0 && j == randomVal1)
 			{
-				char ch = 'E';
-				graph[i].insert(ch);
+				int randPos = rand() % 2;
+				if (randPos == 1)
+				{
+					char ch = 'C';
+					graph[i].insert(ch);
+				}
+				else
+				{
+					char ch = 'E';
+					graph[i].insert(ch);
+					check = true;
+				}
+			}
+			else if (i == grid - 1 && j == randomVal2)
+			{
+				if (check)
+				{
+					char ch = 'C';
+					graph[i].insert(ch);
+				}
+				else
+				{
+					char ch = 'E';
+					graph[i].insert(ch);
+				}
+				
 			}
 			else
 			{
@@ -46,32 +76,52 @@ int main()
 		}
 	}
 	displayGraph(graph, grid);
+	int ch;
 	while (1)
 	{
-		char ch;
 		cout << "Press w to move" << endl;
-		cout << "Press d to turnRight" << endl;
-		cin >> ch;
+		cout << "Press d to turn right" << endl;
+		cout << "Press a to turn left" << endl;
+		cout << "Press s to turn back" << endl;
+		 ch = _getch();
+		 system("cls");
 		if (ch == 'w')
 		{
-			move(graph, 'C', grid);
+			
+			if (move(graph, 'C', grid))
+			{
+				cout << "Game ended Susscessfully" << endl;
+				break;
+			}
 			displayGraph(graph, grid);
 		}
 		else if (ch == 'd')
 		{
-			moveRight(graph, 'C', grid);
+			if (turnRight(graph, 'C', grid))
+			{
+				cout << "Game ended Susscessfully" << endl;
+				break;
+			}
 			displayGraph(graph, grid);
 		}
 		else if (ch == 'a')
 		{
-			moveLeft(graph, 'C', grid);
+			turnLeft(graph, 'C', grid);
+			displayGraph(graph, grid);
+		}
+		else if (ch == 's')
+		{
+			if (back(graph, 'C', grid))
+			{
+				cout << "Game ended Susscessfully" << endl;
+				break;
+			}
 			displayGraph(graph, grid);
 		}
 		else 
 		{
 			break;
 		}
-		
 	}
 	/*int noOfAdjV;
 	for (int i = 0; i < vertix; i++)
