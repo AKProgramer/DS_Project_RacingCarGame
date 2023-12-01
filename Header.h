@@ -1,37 +1,62 @@
 #pragma once
 #include<iostream>
+#include<string>
 using namespace std;
-
+struct GameElement
+{
+	static int nextID;
+	int id;
+	int weight;
+	int power;
+	char character;
+	GameElement(int p, char c)
+	{
+		weight = 0;
+		id = nextID++;
+		cout << "id for character " << c << " is " << id << endl;
+		power = p;
+		character = c;
+	}
+	GameElement()
+	{
+		weight = 0;
+		id = nextID++;
+		power = 0;
+		character = '\0';
+	}
+};
+int GameElement::nextID = 0;
+struct Store
+{
+	GameElement* element;
+	Store* next;
+	Store(GameElement* element)
+	{
+		this->element = element;
+		next = NULL;
+	}
+};
 class queue
 {
-	struct Node
-	{
-		char data;
-		Node* next;
-		Node(char d)
-		{
-			data = d;
-			next = NULL;
-		}
-	};
-	Node* front;
-	Node* rear;
+	
+	Store* front;
+	Store* rear;
 public:
 	queue()
 	{
 		front = NULL;
 		rear = NULL;
 	}
-	char Front()
+	GameElement* Front()
 	{
 		if (isEmpty())
 		{
-			return '\0';
+			return NULL;
 		}
 		else
 		{
 
-		return front->data;
+		return front->element;
 		}
 	}
 
@@ -43,9 +68,9 @@ public:
 		}
 		return 0;
 	}
-	void enqueue(int data)
+	void enqueue(GameElement* data)
 	{
-		Node* newNode = new Node(data);
+		Store* newNode = new Store(data);
 		if (isEmpty())
 		{
 			front = rear = newNode;
@@ -56,13 +81,13 @@ public:
 	}
 	void dequeue()
 	{
-		Node* todelete = front;
+		Store* todelete = front;
 		front = front->next;
 		delete todelete;
 	}
 	int size()
 	{
-		Node* traverse = front;
+		Store* traverse = front;
 		int count = 0;
 		while (traverse != NULL)
 		{
@@ -71,13 +96,50 @@ public:
 		}
 		return count;
 	}
-	void display()
+};
+
+class CollectionOfPowerUps 
+{
+	struct Item
 	{
-		Node* traverse = front;
-		while (traverse != NULL)
+		GameElement* element;
+		Item* next;
+		Item(GameElement* element)
 		{
-			cout << traverse->data << " ";
+			this->element = element;
+			next = NULL;
+		}
+	};
+	Item* head;
+public:
+	CollectionOfPowerUps()
+	{
+		head = NULL;
+	}
+	// check
+	void insert(GameElement* element)
+	{
+		Item* newItem = new Item(element);
+		if (head == NULL)
+		{
+			head = newItem;
+			return;
+		}
+		Item* traverse = head;
+		while (traverse->next != NULL)
+		{
 			traverse = traverse->next;
 		}
+		traverse->next = newItem;
+	}
+	void display()
+	{
+		Item* traverse = head;
+		while (traverse != NULL)
+		{
+			cout << traverse->element->character << " ";
+			traverse = traverse->next;
+		}
+
 	}
 };

@@ -130,6 +130,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Automatic_Mode.h" />
     <ClInclude Include="GameWorld.h" />
     <ClInclude Include="Header.h" />
   </ItemGroup>

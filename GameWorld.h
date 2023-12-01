@@ -1,21 +1,19 @@
 #pragma once
 #include<iostream>
+#include"Header.h"
 #include<Windows.h>
 using namespace std;
 struct Node {
-	char data;
-	int weight = 0;
+	GameElement* element;
 	Node* next;
 	Node()
 	{
-		data = -1;
+		element=NULL;
 		next = NULL;
-		weight = 0;
 	}
-	Node(char d)
+	Node(GameElement* d)
 	{
-		weight = 0;
-		data = d;
+		element = d;
 		next = NULL;
 	}
 };
@@ -31,11 +29,16 @@ public:
 	{
 		return list;
 	}
-	void insert(char d)
+	void insert(GameElement* element)
 	{
+		Node* newNode = new Node(element);
+		if (element == NULL)
+		{
+			return;
+		}
 		if (list == NULL)
 		{
-			list = new Node(d);
+			list = newNode;
 			return;
 		}
 		Node* traverse = list;
@@ -43,7 +46,7 @@ public:
 		{
 			traverse = traverse->next;
 		}
-		traverse->next = new Node(d);
+		traverse->next =newNode;
 		
 	}
 	
@@ -56,38 +59,43 @@ public:
 		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 		while (temp != NULL)
 		{
-			if (temp->data == '#')
+			if (temp->element->character == '#' || temp->element->character == '|' || temp->element->character == 'X')
 			{
 				SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-				cout << temp->data << " ";
+				cout << temp->element->character << " ";
 				temp = temp->next;
 				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 			}
-			else if (temp->data == '\xE2')
+			else if (temp->element->character == '.' || temp->element->character == 'T')
 			{
-				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-				cout << temp->data << " ";
+				cout << temp->element->character << " ";
 				temp = temp->next;
-				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 			}
-			else if (temp->data == 'C')
+			else if (temp->element->character == '\xE2' || temp->element->character == '$' || temp->element->character == '!')
 			{
-				SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-				cout << temp->data << " ";
+				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN);
+				cout << temp->element->character << " ";
 				temp = temp->next;
 				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 			}
-			else if (temp->data == 'E')
+			else if (temp->element->character == 'C')
 			{
 				SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-				cout << temp->data << " ";
+				cout << temp->element->character << " ";
+				temp = temp->next;
+				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+			}
+			else if (temp->element->character == 'E')
+			{
+				SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+				cout << temp->element->character << " ";
 				temp = temp->next;
 				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 			}
 			
 			else
 			{
-				//cout << temp->data << " ";
+				//cout << temp->element->character << " ";
 				cout << "  ";
 				temp = temp->next;
 			}
@@ -100,7 +108,7 @@ public:
 	
 };
 //d right
-bool turnRight(LinkedList*& graph, char ch, int size)
+bool turnRight(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& obs)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -109,19 +117,32 @@ bool turnRight(LinkedList*& graph, char ch, int size)
 		while (traverse != NULL)
 		{
 			
-			if (traverse->data == ch)
+			if (traverse->element->character == ch)
 			{
-				//&& traverse->next->data != '|'
+				//&& traverse->next->element->character != '|'
 				if (traverse->next != NULL)
 				{
-					if (traverse->next->data == 'E')
+					if (traverse->next->element->character == '#' || traverse->next->element->character == '|' || traverse->next->element->character == 'X')
+					{
+						obs++;
+					}
+					else if (traverse->next->element->character == '\xE2' || traverse->next->element->character == '$' || traverse->next->element->character == '!')
+					{
+						GameElement* temp = new GameElement(traverse->next->element->power, traverse->next->element->character);
+						
+						cout << traverse->next->element->character << endl;
+						collection.insert(temp);
+						traverse->next->element->character = '*';
+					}
+					else if (traverse->next->element->character == 'E')
 					{
 						return 1;
 					}
-					char store = traverse->next->data;
-					traverse->next->data = traverse->data;
-					traverse->data = store;
-					traverse = traverse->next;
+						char store = traverse->next->element->character;
+						traverse->next->element->character = traverse->element->character;
+							traverse->element->character = store;
+						
+						traverse = traverse->next;
 				}
 			}
 			traverse = traverse->next;
@@ -131,31 +152,42 @@ bool turnRight(LinkedList*& graph, char ch, int size)
 	return 0;
 }
 //s back
-bool back(LinkedList*& graph, char ch, int size)
+bool back(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& obs)
 {
 	for (int i = 0; i < size-1; i++)
 	{
 		bool check = false;
 		Node* traverse = graph[i].getlist();
-		Node* right = graph[i + 1].getlist();
+		Node* lower = graph[i + 1].getlist();
 		while (traverse != NULL)
 		{
-			if (traverse->data == ch)
+			if (traverse->element->character == ch)
 			{
-				//if (right->data != '|')
+
+				//if (right->element->character != '|')
 				//{
-					if (right->data == 'E')
-					{
-						return 1;
-					}
-					char store = right->data;
-					right->data = traverse->data;
-					traverse->data = store;
+				if (lower->element->character == '#' || lower->element->character == '|' || lower->element->character == 'X')
+				{
+					obs++;
+				}
+				else if (lower->element->character == '\xE2' || lower->element->character == '$' || lower->element->character == '!')
+				{
+					GameElement* temp = new GameElement(lower->element->power, lower->element->character);
+					collection.insert(temp);
+					lower->element->character = '*';
+				}
+				else if (lower->element->character == 'E')
+				{
+					return 1;
+				}
+					char store = lower->element->character;
+					lower->element->character = traverse->element->character;
+					traverse->element->character = store;
 					check = true;
 				//}
 				
 			}
-			right = right->next;
+			lower = lower->next;
 			traverse = traverse->next;
 		}
 		if (check == true)
@@ -167,30 +199,41 @@ bool back(LinkedList*& graph, char ch, int size)
 	return 0;
 }
 // w move
-bool move(LinkedList*& graph, char ch, int size)
+bool move(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection,int& obs)
 {
 	for (int i = 1; i < size; i++)
 	{
 		Node* traverse = graph[i].getlist();
-		Node* left = graph[i - 1].getlist();
+		Node* upper = graph[i - 1].getlist();
 		while (traverse != NULL)
 		{
-			if (traverse->data == ch)
+			if (traverse->element->character == ch)
 			{
-				//if (left->data != '|')
+				//if (left->element->character != '|')
 				//{
-					if (traverse->next->data == 'E')
-					{
-						return 1;
-					}
-					char store = left->data;
-					left->data = traverse->data;
-					traverse->data = store;
+				if (upper->element->character == '#' || upper->element->character == '|' || upper->element->character == 'X')
+				{
+					obs++;
+				}
+				else if (upper->element->character == '\xE2' || upper->element->character == '$' || upper->element->character == '!')
+				{
+					GameElement* temp = new GameElement(upper->element->power, upper->element->character);
+					collection.insert(temp);
+					upper->element->character = '*';
+				}
+				else if (upper->element->character == 'E')
+				{
+					return 1;
+				}
+				char store = upper->element->character;
+				upper->element->character = traverse->element->character;
+				traverse->element->character = store;
+					
 					
 				//}
 
 			}
-			left = left->next;
+			upper = upper->next;
 			traverse = traverse->next;
 		}
 
@@ -198,35 +241,55 @@ bool move(LinkedList*& graph, char ch, int size)
 	return 0;
 }
 // leftturn
-void turnLeft(LinkedList*& graph, char ch, int size)
+bool turnLeft(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& obs)
 {
 	for (int i = 0; i < size; i++)
 	{
 		Node* traverse = graph[i].getlist();
 		while (traverse->next != NULL)
 		{
-			if (traverse->next->data == ch)
+			/*if (traverse->next->next != NULL)
 			{
-				//if (traverse->data != '|')
+				if (traverse->next->next->element->character == element->character)
+				{
+					if (traverse->element->character == '#')
+					{
+						traverse->element->character = 'T';
+					}
+				}
+			}*/
+			if (traverse->next->element->character == ch)
+			{
+				if (traverse->element->character == '#' || traverse->element->character == '|' || traverse->element->character == 'X')
+				{
+					obs++;
+				}
+				else if (traverse->element->character == '\xE2' || traverse->element->character == '$' || traverse->element->character == '!')
+				{
+					GameElement* temp = new GameElement(traverse->element->power, traverse->element->character);
+					collection.insert(temp);
+					traverse->element->character = '*';
+				}
+				else if (traverse->element->character == 'E' && traverse->next->element->character=='C')
+				{
+					return 1;
+				}
+				//if (traverse->element->character != '|')
 				//{
-					char store = traverse->next->data;
-					traverse->next->data = traverse->data;
-					traverse->data = store;
+					char store = traverse->next->element->character;
+					traverse->next->element->character = traverse->element->character;
+					traverse->element->character = store;
 				//}
 
 			}
 			traverse = traverse->next;
 		}
 	}
+	return 0;
 }
 void displayGraph(LinkedList* arr, int size)
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-	for (int i = 0; i < (size* 2)+3; i++)
-	{
-		cout << "-";
-	}
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 	cout << endl;
 	for (int i = 0; i < size; i++)
@@ -234,12 +297,28 @@ void displayGraph(LinkedList* arr, int size)
 		arr[i].display();
 		cout << endl;
 	}
-	SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-	for (int i = 0; i < (size*2)+3; i++)
-	{
-		cout << "-";
-	}
-	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 	cout << endl;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
