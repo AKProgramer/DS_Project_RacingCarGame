@@ -51,7 +51,7 @@ public:
 					minIndex = v;
 				}
 			}
-
+			           
 			int u = minIndex;
 			visited[u] = true;
 
@@ -120,7 +120,7 @@ public:
 	}
 
 };
-void insertingNodesInGraph(LinkedList* graph, int size)
+int insertingNodesInGraph(LinkedList* graph, int size)
 {
 	Graph actualGraph(size * size);
 	int index = 0;
@@ -184,10 +184,7 @@ void insertingNodesInGraph(LinkedList* graph, int size)
 		traverse2 = traverse2->next;
 		index++;
 	}
-	/*for (int i = 0; i < size; i++)
-	{
-		actualGraph.dijkstra();
-	}*/
 
-	actualGraph.dijkstra();
+	vector<int> vec=actualGraph.dijkstra();
+	return vec.size();
 }

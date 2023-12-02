@@ -2,6 +2,7 @@
 #include<iostream>
 #include"Header.h"
 #include<Windows.h>
+#include<vector>
 using namespace std;
 struct Node {
 	GameElement* element;
@@ -107,7 +108,7 @@ public:
 	
 };
 //d right
-bool turnRight(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& obs)
+bool turnRight(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& hash, int& bar, int& X)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -121,9 +122,17 @@ bool turnRight(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& coll
 				//&& traverse->next->element->character != '|'
 				if (traverse->next != NULL)
 				{
-					if (traverse->next->element->character == '#' || traverse->next->element->character == '|' || traverse->next->element->character == 'X')
+					if (traverse->next->element->character == '#')
 					{
-						obs++;
+						hash++;
+					}
+					else if (traverse->next->element->character == '|')
+					{
+						bar++;
+					}
+					else if (traverse->next->element->character == 'X')
+					{
+						X++;
 					}
 					else if (traverse->next->element->character == '\xE2' || traverse->next->element->character == '$' || traverse->next->element->character == '!')
 					{
@@ -151,7 +160,7 @@ bool turnRight(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& coll
 	return 0;
 }
 //s back
-bool back(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& obs)
+bool back(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& hash, int& bar, int& X)
 {
 	for (int i = 0; i < size-1; i++)
 	{
@@ -165,9 +174,17 @@ bool back(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collectio
 
 				//if (right->element->character != '|')
 				//{
-				if (lower->element->character == '#' || lower->element->character == '|' || lower->element->character == 'X')
+				if (lower->element->character == '#')
 				{
-					obs++;
+					hash++;
+				}
+				else if (lower->element->character == '|')
+				{
+					bar++;
+				}
+				else if (lower->element->character == 'X')
+				{
+					X++;
 				}
 				else if (lower->element->character == '\xE2' || lower->element->character == '$' || lower->element->character == '!')
 				{
@@ -198,7 +215,7 @@ bool back(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collectio
 	return 0;
 }
 // w move
-bool move(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection,int& obs)
+bool move(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection,int& hash, int& bar, int& X)
 {
 	for (int i = 1; i < size; i++)
 	{
@@ -210,9 +227,17 @@ bool move(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collectio
 			{
 				//if (left->element->character != '|')
 				//{
-				if (upper->element->character == '#' || upper->element->character == '|' || upper->element->character == 'X')
+				if (upper->element->character == '#')
 				{
-					obs++;
+					hash++;
+				}
+				else if (upper->element->character == '|')
+				{
+					bar++;
+				}
+				else if (upper->element->character == 'X')
+				{
+					X++;
 				}
 				else if (upper->element->character == '\xE2' || upper->element->character == '$' || upper->element->character == '!')
 				{
@@ -240,7 +265,7 @@ bool move(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collectio
 	return 0;
 }
 // leftturn
-bool turnLeft(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& obs)
+bool turnLeft(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& collection, int& hash, int& bar, int& X)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -259,9 +284,17 @@ bool turnLeft(LinkedList*& graph, char ch, int size, CollectionOfPowerUps& colle
 			}*/
 			if (traverse->next->element->character == ch)
 			{
-				if (traverse->element->character == '#' || traverse->element->character == '|' || traverse->element->character == 'X')
+				if (traverse->element->character == '#')
 				{
-					obs++;
+					hash++;
+				}
+				else if (traverse->element->character == '|')
+				{
+					bar++;
+				}
+				else if (traverse->element->character == 'X')
+				{
+					X++;
 				}
 				else if (traverse->element->character == '\xE2' || traverse->element->character == '$' || traverse->element->character == '!')
 				{
@@ -297,6 +330,23 @@ void displayGraph(LinkedList* arr, int size)
 		cout << endl;
 	}
 	cout << endl;
+}
+void countScore(int& score, int disCovered, int obstaclePowerHash,int hash, int bar, int obstaclePowerBar, int obstaclePowerX, int storeShortestDistance, int time, CollectionOfPowerUps collect)
+{
+	
+	if (time > 40)
+	{
+		score -= time - 40;
+	}
+	if (disCovered > storeShortestDistance)
+	{
+		score = (2 * disCovered) - (hash * obstaclePowerHash) - (bar * obstaclePowerBar) - (hash * obstaclePowerX);
+	}
+	vector<int> vec = collect.getVectorOfPower();
+	for (auto i : vec)
+	{
+		score += i;
+	}
 }
 
 

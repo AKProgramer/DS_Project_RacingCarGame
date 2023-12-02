@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include<string>
+#include<vector>
 using namespace std;
 struct GameElement
 {
@@ -16,11 +17,11 @@ struct GameElement
 		character = c;
 		if (c == '#' || c == '|' || c == 'X')
 		{
-			weight = 100 + (-1 * power);
+			weight = 300 + (-1 * power);
 		}
 		else if (c == '$' || c == '\xE2' || c == '!')
 		{
-			weight = 100 + (-1 * power);
+			weight = 40 + (-1 * power);
 		}
 		else if(c=='*')
 		{
@@ -138,6 +139,17 @@ public:
 			traverse = traverse->next;
 		}
 		traverse->next = newItem;
+	}
+	vector<int> getVectorOfPower()
+	{
+		vector<int> vec;
+		Item* traverse = head;
+		while (traverse != NULL)
+		{
+			vec.push_back(traverse->element->power);
+			traverse = traverse->next;
+		}
+		return vec;
 	}
 	void display()
 	{
