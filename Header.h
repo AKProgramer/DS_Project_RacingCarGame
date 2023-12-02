@@ -11,18 +11,25 @@ struct GameElement
 	char character;
 	GameElement(int p, char c)
 	{
-		weight = 0;
 		id = nextID++;
-		cout << "id for character " << c << " is " << id << endl;
 		power = p;
 		character = c;
-	}
-	GameElement()
-	{
-		weight = 0;
-		id = nextID++;
-		power = 0;
-		character = '\0';
+		if (c == '#' || c == '|' || c == 'X')
+		{
+			weight = 100 + (-1 * power);
+		}
+		else if (c == '$' || c == '\xE2' || c == '!')
+		{
+			weight = 100 + (-1 * power);
+		}
+		else if(c=='*')
+		{
+			weight = 100;
+		}
+		else
+		{
+			weight = 0;
+		}
 	}
 };
 int GameElement::nextID = 0;
@@ -36,13 +43,13 @@ struct Store
 		next = NULL;
 	}
 };
-class queue
+class Queue
 {
 	
 	Store* front;
 	Store* rear;
 public:
-	queue()
+	Queue()
 	{
 		front = NULL;
 		rear = NULL;

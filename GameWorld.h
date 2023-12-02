@@ -31,11 +31,11 @@ public:
 	}
 	void insert(GameElement* element)
 	{
-		Node* newNode = new Node(element);
 		if (element == NULL)
 		{
 			return;
 		}
+		Node* newNode = new Node(element);
 		if (list == NULL)
 		{
 			list = newNode;
@@ -95,8 +95,7 @@ public:
 			
 			else
 			{
-				//cout << temp->element->character << " ";
-				cout << "  ";
+				cout << temp->element->character << " ";
 				temp = temp->next;
 			}
 			
