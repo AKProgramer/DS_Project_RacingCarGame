@@ -1,7 +1,8 @@
 #pragma once
 #include<iostream>
-#include"Header.h"
+#include"GameElement.h"
 #include<Windows.h>
+#include<iomanip>
 #include<vector>
 using namespace std;
 struct Node {
@@ -63,7 +64,7 @@ public:
 			if (temp->element->character == '#' || temp->element->character == '|' || temp->element->character == 'X')
 			{
 				SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-				cout << temp->element->character << " ";
+				cout <<temp->element->character << " ";
 				temp = temp->next;
 				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 			}
@@ -324,10 +325,13 @@ void displayGraph(LinkedList* arr, int size)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 	cout << endl;
+	int width = 75 - size;
 	for (int i = 0; i < size; i++)
 	{
+		cout << setw(width);
 		arr[i].display();
 		cout << endl;
+		
 	}
 	cout << endl;
 }

@@ -23,10 +23,13 @@
     <ClInclude Include="GameWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header.h">
+    <ClInclude Include="GameElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Automatic_Mode.h">
+    <ClInclude Include="AutomaticMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

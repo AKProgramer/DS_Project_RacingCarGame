@@ -1,8 +1,10 @@
 #include<iostream>
 #include"GameWorld.h"
-#include"Header.h"
-#include"Automatic_Mode.h"
+#include"GameElement.h"
+#include"AutomaticMode.h"
+#include"MovementFunctions.h"
 #include <cstdlib>
+#include<iomanip>
 #include<conio.h>
 #include<ctime>
 #include<chrono>
@@ -18,122 +20,16 @@ int main()
 	srand(time(0));
 	Queue obstacles;
 	Queue powerup;
-	
-	int grid=5 + (rand() % 15);
-	// enqueuing obstacles
-	// small obstacle medium obstacle | large obstacle | X
-	int obstaclePowerHash = 20 + (rand() % 10);
-	int obstaclePowerBar = 15 + (rand() % 10);
-	int obstaclePowerX = 10 + (rand() % 10);
-	for (int i = 0; i < grid; i++)
-	{
-		int randObstacle = rand() % 3;
-		if (randObstacle==0)
-		{
-			
-			char obstacle = '#';
-			GameElement* ele=new GameElement(-1* obstaclePowerHash, obstacle);
-			obstacles.enqueue(ele);
-		}
-		else if (randObstacle == 1)
-		{
-			
-			char obstacle = '|';
-			GameElement* ele = new GameElement(-1* obstaclePowerHash, obstacle);
-			obstacles.enqueue(ele);
-		}
-		else
-		{
-			
-			char obstacle = 'X';
-			GameElement* ele = new GameElement(-1* obstaclePowerHash, obstacle);
-			obstacles.enqueue(ele);
-		}
-		
-	}
-	
-	// enqueuing powerups
-	// max power \xe2 medium power ! low power $
-	for (int i = 0; i < grid; i++)
-	{
-		int randPowerup = rand() % 3;
-		if (randPowerup == 0)
-		{
-			int power = 10 + (rand() % 10);
-			char obstacle = '$';
-			GameElement* ele=new GameElement(power, obstacle);
-			powerup.enqueue(ele);
-		}
-		else if (randPowerup == 1)
-		{
-			int power = 15 + (rand() % 10);
-			char obstacle = '!';
-			GameElement* ele = new GameElement(power, obstacle);
-			powerup.enqueue(ele);
-		}
-		else
-		{
-			int power = 20 + (rand() % 10);
-			char obstacle = '\xE2';
-			GameElement* ele = new GameElement(power, obstacle);
-			powerup.enqueue(ele);
-		}
-
-	}
-	
-	//collecting powerups in linkedlist
+	LinkedList* graph;
 	CollectionOfPowerUps collect;
-
-	bool check = false;
-	// Random values used for placing C and E
-	int randomVal1 = rand() % grid;
-	int randomVal2 = rand() % grid;
-	LinkedList* graph = new LinkedList[grid];
-	// I am here inserting values
-	for (int i = 0; i < grid; i++)
-	{
-		int indexOfObstcle = rand() % grid;
-		int indexOfPowerup = rand() % grid;
-		for (int j = 0; j < grid; j++)
-		{
-
-			if (i == 0 && j == randomVal1)
-			{
-
-				GameElement* element = new GameElement(0, 'E');
-				graph[i].insert(element);
-				check = true;
-				continue;
-
-			}
-			if (i == grid - 1 && j == randomVal2)
-			{
-				GameElement* element = new GameElement(0, 'C');
-				graph[i].insert(element);
-				continue;
-
-			}
-			if (j == indexOfObstcle)
-			{
-				graph[i].insert(obstacles.Front());
-				obstacles.dequeue();
-			}
-			else if (j == indexOfPowerup)
-			{
-				graph[i].insert(powerup.Front());
-				powerup.dequeue();
-			}
-			else
-			{
-				GameElement* element = new GameElement(2, '*');
-				graph[i].insert(element);
-			}
-			
-		}
-	}
-	
+	int grid = 0;
+	int obstaclePowerHash =0;
+	int obstaclePowerBar = 0;
+	int obstaclePowerX = 0;
+	newGame(obstacles, graph, powerup, collect, grid, obstaclePowerHash, obstaclePowerBar, obstaclePowerX);
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	int choice;
+	int choice2;
 	while (1)
 	{
 		cout << "1 for Manual" << endl;
@@ -141,18 +37,41 @@ int main()
 		cout << "3 to exit" << endl;
 		cin >> choice;
 		system("cls");
-		if(choice==1)
+		if (choice == 1)
 		{
-			insertingNodesInGraph(graph, grid);
+			while (1)
+			{
+				cout << "1 for new game" << endl;
+				cout << "2 for resume" << endl;
+				cin >> choice2;
+				system("cls");
+				if (choice2 == 1)
+				{
+					X = 0;
+					bar = 0;
+					hash = 0;
+					disCovered = 0;
+					collect.deleteCollectionOfPowerup();
+					
+					score = 0;
+					newGame(obstacles, graph, powerup, collect, grid, obstaclePowerHash, obstaclePowerBar, obstaclePowerX);
+					break;
+				}
+				else if (choice2 == 2)
+				{
+					break;
+				}
+
+			}
 			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-			cout << "TIMER : 0 seconds" << endl;
+			cout << setw(40) << "TIMER : 0 seconds" << endl;
 			SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 			displayGraph(graph, grid);
 			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-			cout << "SCORE : " << score << endl;
-			cout << "DISTANCE COVERED : " << disCovered << endl;
-			cout << "NO OF OBSTACLES HIT : " << hash + bar + X << endl;
-			cout << "COLLECTED POWER-UPS : ";
+			cout << setw(50) << "SCORE : " << score << endl;
+			cout << setw(50) << "DISTANCE COVERED : " << disCovered << endl;
+			cout << setw(50) << "NO OF OBSTACLES HIT : " << bar + hash + X << endl;
+			cout << setw(50) << "COLLECTED POWER-UPS : ";
 			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED);
 			collect.display();
 			cout << endl;
@@ -160,123 +79,54 @@ int main()
 			int ch;
 			while (1)
 			{
-				storeShortestDistance = insertingNodesInGraph(graph, grid);
-				cout << "Press w to move" << endl;
-				cout << "Press d to turn right" << endl;
-				cout << "Press a to turn left" << endl;
-				cout << "Press s to turn back" << endl;
+				SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);
+				cout << setw(83) << "Press w to move forword" << endl;
+				cout << setw(81) << "Press d to turn right" << endl;
+				cout << setw(80) << "Press a to turn left" << endl;
+				cout << setw(80) << "Press s to turn back" << endl;
+				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 				ch = _getch();
 				system("cls");
+
 				if (ch == 'w')
 				{
-					// calculating distance for each click
-					disCovered++;
+
 					auto currentTime = chrono::steady_clock::now();
 					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
-					if (move(graph, 'C', grid, collect, hash, bar, X))
+					if(pressW(0, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
 					{
-						cout << "Game ended Susscessfully" << endl;
 						break;
 					}
-					// Counting scores here
-					countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, elapsedTime.count(), collect);
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					cout << "TIMER : " << elapsedTime.count() << " seconds" << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					displayGraph(graph, grid);
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					cout << "SCORE : " << score << endl;
-					cout << "DISTANCE COVERED : " << disCovered << endl;
-					cout << "NO OF OBSTACLES HIT : " << bar + hash + X << endl;
-					cout << "COLLECTED POWER-UPS : ";
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED);
-					collect.display();
-					cout << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+
 				}
 				else if (ch == 'd')
 				{
-					// calculating distance for each click
-					disCovered++;
 					auto currentTime = chrono::steady_clock::now();
 					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
-					if (turnRight(graph, 'C', grid, collect, hash, bar, X))
+					if (pressD(0, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
 					{
-						cout << "Game ended Susscessfully" << endl;
 						break;
 					}
-					// Counting scores here
-					countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, elapsedTime.count(), collect);
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					cout << "TIMER : " << elapsedTime.count() << " seconds" << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					displayGraph(graph, grid);
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					cout << "SCORE : " << score << endl;
-					cout << "DISTANCE COVERED : " << disCovered << endl;
-					cout << "NO OF OBSTACLES HIT : " << bar + hash + X << endl;
-					cout << "COLLECTED POWER-UPS : ";
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED);
-					collect.display();
-					cout << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+
 				}
 				else if (ch == 'a')
 				{
-					// calculating distance for each click
-					disCovered++;
 					auto currentTime = chrono::steady_clock::now();
 					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
-					if (turnLeft(graph, 'C', grid, collect, hash, bar, X))
+					if (pressA(0, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
 					{
-						cout << "Game ended Susscessfully" << endl;
 						break;
 					}
-					// Counting scores here
-					countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, elapsedTime.count(), collect);
-
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					cout << "TIMER : " << elapsedTime.count() << " seconds" << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					displayGraph(graph, grid);
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					cout << "SCORE : " << score << endl;
-					cout << "DISTANCE COVERED : " << disCovered << endl;
-					cout << "NO OF OBSTACLES HIT : " << bar + hash + X << endl;
-					cout << "COLLECTED POWER-UPS : ";
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED);
-					collect.display();
-					cout << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 				}
 				else if (ch == 's')
 				{
-					// calculating distance for each click
-					disCovered++;
 					auto currentTime = chrono::steady_clock::now();
 					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
-					if (back(graph, 'C', grid, collect, hash, bar, X))
+					if (pressS(0, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
 					{
-						cout << "Game ended Susscessfully" << endl;
 						break;
 					}
-					// Counting scores here
-					countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, elapsedTime.count(), collect);
 
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					insertingNodesInGraph(graph, grid);
-					cout << "TIMER : " << elapsedTime.count() << " seconds" << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					displayGraph(graph, grid);
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-					cout << "SCORE : " << score << endl;
-					cout << "DISTANCE COVERED : " << disCovered << endl;
-					cout << "NO OF OBSTACLES HIT : " << bar + hash + X << endl;
-					cout << "COLLECTED POWER-UPS : ";
-					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED);
-					collect.display();
-					cout << endl;
-					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 				}
 				else
 				{
@@ -284,29 +134,111 @@ int main()
 				}
 			}
 		}
+			
 		else if (choice == 2)
 		{
-			
+			int choice3;
+			while (1)
+			{
+				cout << "1 for new game" << endl;
+				cout << "2 for resume" << endl;
+				cin >> choice3;
+				system("cls");
+				if (choice3 == 1)
+				{
+					X = 0;
+					bar = 0;
+					hash = 0;
+					disCovered = 0;
+					collect.deleteCollectionOfPowerup();
+					newGame(obstacles, graph, powerup, collect, grid, obstaclePowerHash, obstaclePowerBar, obstaclePowerX);
+					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+					insertingNodesInGraph(graph, grid);
+					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+				
+					break;
+				}
+				else if (choice3 == 2)
+				{
+					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+					insertingNodesInGraph(graph, grid);
+					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+					break;
+				}
+
+			}
+			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+			cout << setw(40) << "TIMER : 0 seconds" << endl;
+			SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+			displayGraph(graph, grid);
+			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+			cout << setw(50) << "SCORE : " << score << endl;
+			cout << setw(50) << "DISTANCE COVERED : " << disCovered << endl;
+			cout << setw(50) << "NO OF OBSTACLES HIT : " << bar + hash + X << endl;
+			cout << setw(50) << "COLLECTED POWER-UPS : ";
+			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED);
+			collect.display();
+			cout << endl;
+			SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+			int ch;
+			while (1)
+			{
+				SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);
+				cout << setw(83) << "Press w to move forword" << endl;
+				cout << setw(81) << "Press d to turn right" << endl;
+				cout << setw(80) << "Press a to turn left" << endl;
+				cout << setw(80) << "Press s to turn back" << endl;
+				SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+				ch = _getch();
+				system("cls");
+
+				if (ch == 'w')
+				{
+
+					auto currentTime = chrono::steady_clock::now();
+					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
+					if(pressW(1, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
+					{
+						break;
+					}
+
+				}
+				else if (ch == 'd')
+				{
+					auto currentTime = chrono::steady_clock::now();
+					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
+					if (pressD(1, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
+					{
+						break;
+					}
+
+				}
+				else if (ch == 'a')
+				{
+					auto currentTime = chrono::steady_clock::now();
+					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
+					if (pressA(1, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
+					{
+						break;
+					}
+				}
+				else if (ch == 's')
+				{
+					auto currentTime = chrono::steady_clock::now();
+					auto elapsedTime = chrono::duration_cast<chrono::seconds>(currentTime - startTime);
+					if (pressS(1, grid, score, graph, disCovered, collect, hash, bar, X, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, elapsedTime.count(), storeShortestDistance))
+					{
+						break;
+					}
+
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
-
-
-
 	}
 	
-	
-	
-	/*int noOfAdjV;
-	for (int i = 0; i < vertix; i++)
-	{
-		cout << "Enter no of adjacent vertices of vertix " << i + 1 << " : ";
-		cin >> noOfAdjV;
-		for (int j = 0; j < noOfAdjV; j++)
-		{
-			int data;
-			cout << "Enter " << j + 1 << " adjacent vertices of vertix " << i + 1 << " : ";
-			cin >> data;
-			graph[i].insert(data);
-		}
-	}*/
 	return 0;
 }

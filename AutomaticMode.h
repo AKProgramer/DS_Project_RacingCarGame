@@ -1,6 +1,6 @@
 #pragma once
 #include<iostream>
-#include"Header.h"
+#include"GameElement.h"
 #include"GameWorld.h"
 #include<vector>
 using namespace std;
@@ -70,10 +70,10 @@ public:
 		}
 		vector<int> vec;
 		// Reconstruct the path from source to destination
-		std::cout << "Shortest path from " << list[source].getlist()->element->character << " to " << list[destination].getlist()->element->character << ":\n";
+		cout <<setw(80)<< "Shortest path from " << list[source].getlist()->element->character << " to " << list[destination].getlist()->element->character << ":\n";
 		if (distance[destination] != INT_MAX) {
 			int current = destination;
-			cout << "Path : ";
+			cout <<setw(55)<< "Path : ";
 			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 			SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);
 			while (current != -1) {
@@ -85,12 +85,10 @@ public:
 			cout << endl;
 		}
 		else {
-			std::cout << "No path from " << source << " to " << destination << "!";
+				cout << "No path from " << source << " to " << destination << "!";
 		}
 
-		delete[] distance;
-		delete[] visited;
-		delete[] parent;
+		
 		return vec;
 	}
 
@@ -122,6 +120,10 @@ public:
 };
 int insertingNodesInGraph(LinkedList* graph, int size)
 {
+	if (graph == NULL)
+	{
+		return 0;
+	}
 	Graph actualGraph(size * size);
 	int index = 0;
 	//inserting first lists in graphs

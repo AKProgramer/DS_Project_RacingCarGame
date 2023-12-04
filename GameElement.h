@@ -104,6 +104,14 @@ public:
 		}
 		return count;
 	}
+	void removeObstacleFromQueue()
+	{
+		while (isEmpty())
+		{
+			this->dequeue();
+		}
+	}
+
 };
 
 class CollectionOfPowerUps 
@@ -160,5 +168,22 @@ public:
 			traverse = traverse->next;
 		}
 
+	}
+	void deleteCollectionOfPowerup()
+	{
+		if (head == NULL)
+		{
+			return;
+		}
+		Item* traverse = head;
+		Item* toDelete;
+		
+		while (traverse != NULL)
+		{
+			toDelete = traverse->next;
+			delete traverse;
+			traverse = toDelete;
+		}
+		head = NULL;
 	}
 };
