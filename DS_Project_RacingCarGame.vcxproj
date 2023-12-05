@@ -133,7 +133,10 @@
     <ClInclude Include="AutomaticMode.h" />
     <ClInclude Include="GameWorld.h" />
     <ClInclude Include="GameElement.h" />
+    <ClInclude Include="LeaderBoard.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="MovementFunctions.h" />
+    <ClInclude Include="RandomText.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 #pragma once
 #include<iostream>
 #include"AutomaticMode.h"
+#include"LeaderBoard.h"
+#include"RandomText.h"
 using namespace std;
 void newGame(Queue& obstacles, LinkedList*& graph, Queue& powerup, CollectionOfPowerUps& collect, int& grid, int& obstaclePowerHash, int& obstaclePowerBar, int& obstaclePowerX)
 {
@@ -119,26 +121,38 @@ void newGame(Queue& obstacles, LinkedList*& graph, Queue& powerup, CollectionOfP
 }
 bool pressW(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& disCovered, CollectionOfPowerUps& collect, int& hash, int& bar, int& X, int& obstaclePowerHash, int& obstaclePowerBar, int& obstaclePowerX, int currentTime, int& storeShortestDistance)
 {
-
+	vector<int> vec;
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	disCovered++;
-
-	if (move(graph, 'C', grid, collect, hash, bar, X))
+	char whatHit;
+	if (move(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
 		cout << "Game ended Susscessfully" << endl;
 		return 1;
 	}
 	// Counting scores here
-	countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, currentTime, collect);
+	
+	countScore(score,whatHit, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, currentTime, collect);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	if (zeroForManual)
 	{
-		storeShortestDistance = insertingNodesInGraph(graph, grid);
+		vec = insertingNodesInGraph(graph, grid);
+		storeShortestDistance = vec.size();
 	}
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+	RandomInstruction();
+	cout << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(40) << "TIMER : " << currentTime << " seconds" << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-	displayGraph(graph, grid);
+	if (zeroForManual)
+	{
+		displayGraph(vec, graph, grid);
+	}
+	else
+	{
+		displayGraph(graph, grid);
+	}
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(50) << "SCORE : " << score << endl;
 	cout << setw(50) << "DISTANCE COVERED : " << disCovered << endl;
@@ -153,25 +167,37 @@ bool pressW(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& 
 }
 bool pressA(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& disCovered, CollectionOfPowerUps& collect, int& hash, int& bar, int& X, int& obstaclePowerHash, int& obstaclePowerBar, int& obstaclePowerX, int currentTime, int& storeShortestDistance)
 {
+	vector<int> vec;
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	disCovered++;
-	if (turnLeft(graph, 'C', grid, collect, hash, bar, X))
+	char whatHit;
+	if (turnLeft(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
 		cout << "Game ended Susscessfully" << endl;
 		return 1;
 	}
 	// Counting scores here
-	countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, currentTime, collect);
-
+	countScore(score, whatHit, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, currentTime, collect);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	if (zeroForManual)
 	{
-		storeShortestDistance = insertingNodesInGraph(graph, grid);
+		vec = insertingNodesInGraph(graph, grid);
+		storeShortestDistance = vec.size();
 	}
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+	RandomInstruction();
+	cout << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(40) << "TIMER : " << currentTime << " seconds" << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-	displayGraph(graph, grid);
+	if (zeroForManual)
+	{
+		displayGraph(vec, graph, grid);
+	}
+	else
+	{
+		displayGraph(graph, grid);
+	}
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(50) << "SCORE : " << score << endl;
 	cout << setw(50) << "DISTANCE COVERED : " << disCovered << endl;
@@ -185,24 +211,37 @@ bool pressA(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& 
 }
 bool pressS(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& disCovered, CollectionOfPowerUps& collect, int& hash, int& bar, int& X, int& obstaclePowerHash, int& obstaclePowerBar, int& obstaclePowerX, int currentTime, int& storeShortestDistance)
 {
+	vector<int>vec;
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	disCovered++;
-	if (back(graph, 'C', grid, collect, hash, bar, X))
+	char whatHit;
+	if (back(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
 		cout << "Game ended Susscessfully" << endl;
 		return 1;
 	}
 	// Counting scores here
-	countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, currentTime, collect);
+	countScore(score, whatHit, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, currentTime, collect);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	if (zeroForManual)
 	{
-		storeShortestDistance = insertingNodesInGraph(graph, grid);
+		vec = insertingNodesInGraph(graph, grid);
+		storeShortestDistance = vec.size();
 	}
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+	RandomInstruction();
+	cout << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(40) << "TIMER : " << currentTime << " seconds" << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-	displayGraph(graph, grid);
+	if (zeroForManual)
+	{
+		displayGraph(vec, graph, grid);
+	}
+	else
+	{
+		displayGraph(graph, grid);
+	}
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(50) << "SCORE : " << score << endl;
 	cout << setw(50) << "DISTANCE COVERED : " << disCovered << endl;
@@ -216,24 +255,37 @@ bool pressS(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& 
 }
 bool pressD(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& disCovered, CollectionOfPowerUps& collect, int& hash, int& bar, int& X, int& obstaclePowerHash, int& obstaclePowerBar, int& obstaclePowerX, int currentTime, int& storeShortestDistance)
 {
+	vector<int> vec;
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	disCovered++;
-	if (turnRight(graph, 'C', grid, collect, hash, bar, X))
+	char whatHit;
+	if (turnRight(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
 		cout << "Game ended Susscessfully" << endl;
 		return 1;
 	}
 	// Counting scores here
-	countScore(score, disCovered, obstaclePowerHash, hash, bar, obstaclePowerBar, obstaclePowerX, storeShortestDistance, currentTime, collect);
+	countScore(score, whatHit, obstaclePowerHash, obstaclePowerBar, obstaclePowerX, currentTime, collect);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	if (zeroForManual)
 	{
-		storeShortestDistance = insertingNodesInGraph(graph, grid);
+		vec = insertingNodesInGraph(graph, grid);
+		storeShortestDistance = vec.size();
 	}
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+	RandomInstruction();
+	cout << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(40) << "TIMER : " << currentTime << " seconds" << endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-	displayGraph(graph, grid);
+	if (zeroForManual)
+	{
+		displayGraph(vec, graph, grid);
+	}
+	else
+	{
+		displayGraph(graph, grid);
+	}
 	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 	cout << setw(50) << "SCORE : " << score << endl;
 	cout << setw(50) << "DISTANCE COVERED : " << disCovered << endl;

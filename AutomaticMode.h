@@ -20,14 +20,14 @@ public:
 	{
 		list[vertix].insert(element);
 	}
-	vector<int> dijkstra() {
-		int* distance = new int[vertices];
+	vector<int> shortestPath() {
+		int* dis = new int[vertices];
 		bool* visited = new bool[vertices];
 		int* parent = new int[vertices];
 		int source = 0;
 		int destination = 0;
 		for (int i = 0; i < vertices; ++i) {
-			distance[i] = INT_MAX;
+			dis[i] = INT_MAX;
 			visited[i] = false;
 			parent[i] = -1;
 			list[i].getlist()->element->id = i;
@@ -40,14 +40,14 @@ public:
 				destination = i;
 			}
 		}
-		distance[source] = 0;
+		dis[source] = 0;
 
 		for (int count = 0; count < vertices - 1; ++count) {
 			int minDistance = INT_MAX;
 			int minIndex = -1;
 			for (int v = 0; v < vertices; ++v) {
-				if (!visited[v] && distance[v] <= minDistance) {
-					minDistance = distance[v];
+				if (!visited[v] && dis[v] <= minDistance) {
+					minDistance = dis[v];
 					minIndex = v;
 				}
 			}
@@ -61,8 +61,8 @@ public:
 				int v = temp->element->id;
 				int weight = temp->element->weight;
 
-				if (!visited[v] && distance[u] != INT_MAX && distance[u] + weight < distance[v]) {
-					distance[v] = distance[u] + weight;
+				if (!visited[v] && dis[u] != INT_MAX && dis[u] + weight < dis[v]) {
+					dis[v] = dis[u] + weight;
 					parent[v] = u;
 				}
 				temp = temp->next;
@@ -71,7 +71,7 @@ public:
 		vector<int> vec;
 		// Reconstruct the path from source to destination
 		cout <<setw(80)<< "Shortest path from " << list[source].getlist()->element->character << " to " << list[destination].getlist()->element->character << ":\n";
-		if (distance[destination] != INT_MAX) {
+		if (dis[destination] != INT_MAX) {
 			int current = destination;
 			cout <<setw(55)<< "Path : ";
 			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -92,7 +92,7 @@ public:
 		return vec;
 	}
 
-	// Helper function to find the vertex with minimum distance value
+	// Helper function to find the vertex with minimum dis value
 
 	int minDistance(int dist[], bool visited[]) {
 		int min = INT_MAX, min_index;
@@ -118,12 +118,8 @@ public:
 	}
 
 };
-int insertingNodesInGraph(LinkedList* graph, int size)
+vector<int> insertingNodesInGraph(LinkedList* graph, int size)
 {
-	if (graph == NULL)
-	{
-		return 0;
-	}
 	Graph actualGraph(size * size);
 	int index = 0;
 	//inserting first lists in graphs
@@ -169,8 +165,6 @@ int insertingNodesInGraph(LinkedList* graph, int size)
 
 		}
 	}
-	//cout << index << endl;
-	////Inserting last list in graph
 	Node* traverse2 = graph[size - 1].getlist();
 	GameElement* previous2 = NULL;
 	Node* upper = graph[size - 2].getlist();
@@ -186,7 +180,6 @@ int insertingNodesInGraph(LinkedList* graph, int size)
 		traverse2 = traverse2->next;
 		index++;
 	}
-
-	vector<int> vec=actualGraph.dijkstra();
-	return vec.size();
+	vector<int> vec=actualGraph.shortestPath();
+	return vec;
 }

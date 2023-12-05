@@ -17,7 +17,7 @@ struct GameElement
 		character = c;
 		if (c == '#' || c == '|' || c == 'X')
 		{
-			weight = 300 + (-1 * power);
+			weight = 600 + (-1 * power);
 		}
 		else if (c == '$' || c == '\xE2' || c == '!')
 		{
@@ -132,6 +132,10 @@ public:
 	{
 		head = NULL;
 	}
+	Item* getItem()
+	{
+		return head;
+	}
 	// check
 	void insert(GameElement* element)
 	{
@@ -148,16 +152,31 @@ public:
 		}
 		traverse->next = newItem;
 	}
-	vector<int> getVectorOfPower()
+	int* getVectorOfPower()
 	{
-		vector<int> vec;
+		int* arr = new int[3];
+		arr[0] = 0;
+		arr[1] = 0;
+		arr[2] = 0;
 		Item* traverse = head;
 		while (traverse != NULL)
 		{
-			vec.push_back(traverse->element->power);
+			if (traverse->element->character == '$')
+			{
+				arr[0]=traverse->element->power;
+			}
+			else if (traverse->element->character == '\xE2')
+			{
+				arr[1] = traverse->element->power;
+			}
+			else if (traverse->element->character == '!')
+			{
+				arr[2] = traverse->element->power;
+			}
+			
 			traverse = traverse->next;
 		}
-		return vec;
+		return arr;
 	}
 	void display()
 	{
