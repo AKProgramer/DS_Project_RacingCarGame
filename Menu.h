@@ -126,18 +126,6 @@ void screen3()
     cout << "  (_______)           (_______/|/     \\|\\_______/   )_(      \n\n\n";
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 }
-void thanks()
-{
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
-    cout << "  ### #  #   #   #   # #  #     #   # ##  #  #     ####  ##  ###      ###  #     #  #   # ### #   #  ##  \n";
-    cout << "   #  #  #  # #  ##  # # #       # # #  # #  #     #    #  # #  #     #  # #    # #  # #   #  ##  # #    \n";
-    cout << "   #  ####  ###  # # # ##         #  #  # #  #     ###  #  # ###      ###  #    ###   #    #  # # # # ###  \n";
-    cout << "   #  #  # #   # #  ## # #        #  #  # #  #     #    #  # # #      #    #   #   #  #    #  #  ## #  #  \n";
-    cout << "   #  #  # #   # #   # #  #       #   ##  ####     #     ##  #  #     #    ### #   #  #   ### #   #  ##  \n\n\n\n";
-    SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-
-}
 
 void newGame()
 {

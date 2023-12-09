@@ -47,11 +47,11 @@ class LeaderBoard
 		{
 			root = new Node(user);
 		}
-		if (root->data.score > user.score)
+		if (stoi(root->data.score) > stoi(user.score))
 		{
 			insertingScoreInBST(root->left, user);
 		}
-		else if (root->data.score < user.score)
+		else if (stoi(root->data.score) < stoi(user.score))
 		{
 			insertingScoreInBST(root->right, user);
 		}
@@ -98,7 +98,7 @@ public:
 			return;
 		}
 		printScores(root->right);
-		 cout << "|" << setw(10) << rank++ << setw(20) << root->data.name << setw(20) << root->data.score << setw(5)<<"|"<< endl;
+		 cout <<setw(45)<< "|" <<setw(10)<< rank++<<setw(20) << root->data.name<<setw(20) << root->data.score<<setw(5)<<"|"<< endl;
 		printScores(root->left);
 	}
 };

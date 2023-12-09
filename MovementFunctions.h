@@ -3,7 +3,21 @@
 #include"AutomaticMode.h"
 #include"LeaderBoard.h"
 #include"RandomText.h"
+#include <conio.h>
 using namespace std;
+void thanks()
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+	cout << "  ### #  #   #   #   # #  #     #   # ##  #  #     ####  ##  ###      ###  #     #  #   # ### #   #  ##  \n";
+	cout << "   #  #  #  # #  ##  # # #       # # #  # #  #     #    #  # #  #     #  # #    # #  # #   #  ##  # #    \n";
+	cout << "   #  ####  ###  # # # ##         #  #  # #  #     ###  #  # ###      ###  #    ###   #    #  # # # # ###  \n";
+	cout << "   #  #  # #   # #  ## # #        #  #  # #  #     #    #  # # #      #    #   #   #  #    #  #  ## #  #  \n";
+	cout << "   #  #  # #   # #   # #  #       #   ##  ####     #     ##  #  #     #    ### #   #  #   ### #   #  ##  \n";
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+
+}
+
 void newGame(Queue& obstacles, LinkedList*& graph, Queue& powerup, CollectionOfPowerUps& collect, int& grid, int& obstaclePowerHash, int& obstaclePowerBar, int& obstaclePowerX)
 {
 	srand(time(0));
@@ -127,7 +141,10 @@ bool pressW(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& 
 	char whatHit;
 	if (move(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
-		cout << "Game ended Susscessfully" << endl;
+		int n;
+		thanks();
+		n = _getch();
+		system("cls");
 		return 1;
 	}
 	// Counting scores here
@@ -173,7 +190,10 @@ bool pressA(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& 
 	char whatHit;
 	if (turnLeft(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
-		cout << "Game ended Susscessfully" << endl;
+		int n;
+		thanks();
+		n = _getch();
+		system("cls");
 		return 1;
 	}
 	// Counting scores here
@@ -217,7 +237,10 @@ bool pressS(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& 
 	char whatHit;
 	if (back(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
-		cout << "Game ended Susscessfully" << endl;
+		int n;
+		thanks();
+		n = _getch();
+		system("cls");
 		return 1;
 	}
 	// Counting scores here
@@ -261,7 +284,10 @@ bool pressD(bool zeroForManual, int& grid, int& score, LinkedList*& graph, int& 
 	char whatHit;
 	if (turnRight(graph, 'C', grid, collect, hash, bar, X, whatHit))
 	{
-		cout << "Game ended Susscessfully" << endl;
+		int n;
+		thanks();
+		n = _getch();
+		system("cls");
 		return 1;
 	}
 	// Counting scores here

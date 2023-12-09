@@ -12,6 +12,8 @@
 #include"Menu.h"
 
 using namespace std;
+#define GREEN   "\033[32m"
+
 int main()
 {
 	//Score = 
@@ -324,9 +326,9 @@ int main()
 				int n;
 				cout << "Press any thing to go back" << endl;
 				LeaderBoard* lb = new LeaderBoard;
-				cout << setw(35) << "LEADERBOARD\n";
+				cout << GREEN<<setw(80)<<"LEADERBOARD"<<endl;
 				cout <<setw(100)<< "--------------------------------------------------------" << endl;
-				cout << "|" << setw(10) << "Rank" << setw(20) << "Name" << setw(20) << "Score" << setw(5) << "|" << endl;
+				cout << setw(45)<<"|"<<setw(10) << "Rank"<<setw(20) << "Name"<<setw(20) << "Score"<<setw(5) << "|" << endl;
 				cout <<setw(100)<< "--------------------------------------------------------" << endl;
 				lb->printScores(lb->getHead());
 				cout <<setw(100)<< "--------------------------------------------------------" << endl;
