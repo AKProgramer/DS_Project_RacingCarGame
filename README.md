@@ -1,4 +1,4 @@
-# Race Car Game in C++
+# Race Car Game Using Data structures in C++
 
 This project implements a race car game in C++ that utilizes various data structures for managing game elements efficiently.
 
